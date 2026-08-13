@@ -1,0 +1,271 @@
+:root {
+  --paper: #FAF6EC;
+  --ink: #1E1B16;
+  --green: #2F6F4E;
+  --red: #D94F3D;
+  --gray: #8C8676;
+  --yellow: #F2C14E;
+}
+
+.till-page {
+  min-height: 100vh;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  padding: 40px 20px;
+}
+
+.till-nav {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.till-logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.till-logo span { color: var(--green); }
+
+/* RECEIPT CARD */
+.receipt {
+  width: 340px;
+  background: white;
+  box-shadow: 0 12px 30px rgba(30,27,22,0.12);
+  padding: 28px 26px 36px;
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.receipt::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background:
+    linear-gradient(135deg, white 50%, transparent 50%),
+    linear-gradient(-135deg, white 50%, transparent 50%);
+  background-size: 16px 20px;
+  background-repeat: repeat-x;
+}
+
+.barcode {
+  display: flex;
+  gap: 2px;
+  height: 36px;
+  margin-bottom: 14px;
+}
+.barcode span {
+  background: var(--ink);
+  display: inline-block;
+}
+
+.receipt-store {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.receipt-meta {
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 16px;
+}
+
+.receipt-divider {
+  border-top: 1px dashed var(--gray);
+  margin: 14px 0;
+}
+
+.receipt-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.receipt-line .check { color: var(--green); font-weight: 700; }
+
+.receipt-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.receipt-total small {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+.stamp {
+  position: absolute;
+  top: 22px;
+  right: -14px;
+  border: 2px solid var(--red);
+  color: var(--red);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 4px 8px;
+  transform: rotate(12deg);
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+/* AUTH BUTTONS */
+.till-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.till-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 26px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.till-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.till-btn:hover { transform: translateY(-2px); }
+
+.till-btn.primary { background: var(--ink); color: var(--paper); }
+.till-btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+
+/* FORM CARD (login / signup) */
+.form-card {
+  width: 320px;
+  background: white;
+  box-shadow: 0 12px 30px rgba(30,27,22,0.12);
+  padding: 30px 28px;
+  border-radius: 10px;
+}
+.form-card h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  margin-bottom: 22px;
+  color:blue;
+  font-weight: 100;
+}
+.form-card input {
+  width: 100%;
+  padding: 11px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd6c8;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.form-card input:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+
+.form-card select {
+  width: 100%;
+  padding: 11px 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd6c8;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.form-card button.till-btn { width: 100%; margin-top: 4px; }
+
+.form-error {
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-switch {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--gray);
+}
+.form-switch a { color: var(--green); font-weight: 600; text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .till-btn { transition: none; }
+}
+.barcode {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+  animation: scanMove 2.4s ease-in-out infinite;
+}
+
+@keyframes scanMove {
+  0%   { top: 0; opacity: 1; }
+  45%  { top: 100%; opacity: 1; }
+  50%  { opacity: 0; }
+  55%  { top: 0; opacity: 0; }
+  60%  { opacity: 1; }
+  100% { top: 100%; opacity: 1; }
+}
+
+.receipt-line.animated {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: lineIn 6s ease-in-out infinite;
+}
+
+@keyframes lineIn {
+  0%   { opacity: 0; transform: translateY(6px); }
+  8%   { opacity: 1; transform: translateY(0); }
+  85%  { opacity: 1; transform: translateY(0); }
+  93%  { opacity: 0; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+
+.receipt-total.animated {
+  opacity: 0;
+  animation: totalIn 6s ease-in-out infinite;
+}
+
+@keyframes totalIn {
+  0%   { opacity: 0; }
+  35%  { opacity: 0; }
+  45%  { opacity: 1; }
+  88%  { opacity: 1; }
+  96%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-beam, .receipt-line.animated, .receipt-total.animated {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+.till-page, .billing-page, .admin-page, .grocery-page {
+  color-scheme: light;
+}
