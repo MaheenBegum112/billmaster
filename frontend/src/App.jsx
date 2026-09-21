@@ -12,7 +12,7 @@ import ProductPage from "./pages/ProductPage";
 import AddProductPage from "./pages/AddProductPage";
 import ReportsPage from "./pages/ReportsPage";
 import LowStockPage from "./pages/LowStockPage";
-
+import About from "./pages/About";
 function App() {
   return (
     <CartProvider>
@@ -21,6 +21,7 @@ function App() {
 
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/billing" element={<BillingPage />} />
@@ -33,7 +34,7 @@ function App() {
             <Route path="add-product" element={<AddProductPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="low-stock" element={<LowStockPage />} />
-            
+           
           </Route>
 
         </Routes>
