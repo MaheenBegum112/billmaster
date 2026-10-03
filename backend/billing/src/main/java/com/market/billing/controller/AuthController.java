@@ -1,35 +1,42 @@
 package com.market.billing.controller;
 
-import com.market.billing.model.User;
-import com.market.billing.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.market.billing.dto.AuthResponse;
+import com.market.billing.dto.LoginRequest;
+import com.market.billing.dto.MessageResponse;
+import com.market.billing.dto.SignupRequest;
+import com.market.billing.dto.UserDto;
+import com.market.billing.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
-@PostMapping("/signup")
-public Map<String, String> signup(@RequestBody User newUser) {
-    if (userRepository.findByUsername(newUser.getUsername()) != null) {
-        throw new RuntimeException("Username already exists");
-    }
-    User saved = userRepository.save(newUser);
-    return Map.of("username", saved.getUsername(), "role", saved.getRole());
-}
-    @PostMapping("/login")
-    public Map<String, String> login(@RequestBody User loginRequest) {
-        User user = userRepository.findByUsernameAndPassword(
-                loginRequest.getUsername(), loginRequest.getPassword());
+    private final AuthService authService;
 
-        if (user == null) {
-            throw new RuntimeException("Invalid credentials");
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<MessageResponse> signup(@Valid @RequestBody SignupRequest request) {
+        return ResponseEntity.ok(authService.signup(request));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).build();
         }
-        return Map.of("username", user.getUsername(), "role", user.getRole());
+        return ResponseEntity.ok(authService.getCurrentUser(userDetails.getUsername()));
     }
 }

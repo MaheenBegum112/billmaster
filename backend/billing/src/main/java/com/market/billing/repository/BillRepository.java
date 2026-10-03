@@ -1,70 +1,52 @@
 package com.market.billing.repository;
 
-import java.util.List;
-
+import com.market.billing.model.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import com.market.billing.model.Bill;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
 
-    @Query("SELECT COALESCE(SUM(b.grandTotal), 0) FROM Bill b WHERE DATE(b.billDate) = CURRENT_DATE")
-    double getTodayRevenue();
+    List<Bill> findAllByOrderByBillDateDesc();
 
-    List<Bill> findTop5ByOrderByIdDesc();
-    List<Bill> findAllByOrderByIdDesc();
+    List<Bill> findByUserIdOrderByBillDateDesc(Long userId);
 
-    // Daily sales last 7 days
-    @Query(value = """
-        SELECT DATE(bill_date) as date,
-               COUNT(*) as billCount,
-               SUM(grand_total) as revenue
-        FROM bills
-        WHERE bill_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-        GROUP BY DATE(bill_date)
-        ORDER BY DATE(bill_date) ASC
-        """, nativeQuery = true)
-    List<Object[]> getDailySalesLast7Days();
+    Optional<Bill> findByBillNumber(String billNumber);
 
-    // Monthly sales last 12 months
-    @Query(value = """
-        SELECT DATE_FORMAT(bill_date, '%Y-%m') as month,
-               DATE_FORMAT(bill_date, '%b %Y') as monthLabel,
-               COUNT(*) as billCount,
-               SUM(grand_total) as revenue,
-               SUM(total_amount) as grossAmount,
-               SUM(discount) as totalDiscount
-        FROM bills
-        WHERE bill_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-        GROUP BY DATE_FORMAT(bill_date, '%Y-%m'), DATE_FORMAT(bill_date, '%b %Y')
-        ORDER BY month ASC
-        """, nativeQuery = true)
-    List<Object[]> getMonthlySales();
+    List<Bill> findTop10ByOrderByBillDateDesc();
 
-    // Yearly sales
-    @Query(value = """
-        SELECT YEAR(bill_date) as year,
-               COUNT(*) as billCount,
-               SUM(grand_total) as revenue,
-               SUM(total_amount) as grossAmount,
-               SUM(discount) as totalDiscount
-        FROM bills
-        GROUP BY YEAR(bill_date)
-        ORDER BY year ASC
-        """, nativeQuery = true)
-    List<Object[]> getYearlySales();
+    List<Bill> findTop10ByUserIdOrderByBillDateDesc(Long userId);
 
-    // Weekly trend (last 4 weeks)
-    @Query(value = """
-        SELECT WEEK(bill_date) as week,
-               CONCAT('Week ', WEEK(bill_date)) as weekLabel,
-               COUNT(*) as billCount,
-               SUM(grand_total) as revenue
-        FROM bills
-        WHERE bill_date >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK)
-        GROUP BY WEEK(bill_date)
-        ORDER BY week ASC
-        """, nativeQuery = true)
-    List<Object[]> getWeeklyTrend();
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.billDate BETWEEN :start AND :end")
+    long countByBillDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COUNT(b) FROM Bill b WHERE b.user.id = :userId AND b.billDate BETWEEN :start AND :end")
+    long countByUserIdAndBillDateBetween(@Param("userId") Long userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COALESCE(SUM(b.grandTotal), 0.0) FROM Bill b WHERE b.billDate BETWEEN :start AND :end")
+    Double sumGrandTotalByBillDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COALESCE(SUM(b.grandTotal), 0.0) FROM Bill b WHERE b.user.id = :userId AND b.billDate BETWEEN :start AND :end")
+    Double sumGrandTotalByUserIdAndBillDateBetween(@Param("userId") Long userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COALESCE(SUM(b.grandTotal), 0.0) FROM Bill b")
+    Double sumAllGrandTotal();
+
+    @Query("SELECT COALESCE(SUM(b.discount), 0.0) FROM Bill b")
+    Double sumAllDiscount();
+
+    @Query("SELECT COALESCE(SUM(b.discount), 0.0) FROM Bill b WHERE b.billDate BETWEEN :start AND :end")
+    Double sumDiscountByBillDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT b FROM Bill b WHERE b.billDate BETWEEN :start AND :end ORDER BY b.billDate ASC")
+    List<Bill> findByBillDateBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT b FROM Bill b WHERE b.user.id = :userId AND b.billDate BETWEEN :start AND :end ORDER BY b.billDate ASC")
+    List<Bill> findByUserIdAndBillDateBetween(@Param("userId") Long userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
